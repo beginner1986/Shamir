@@ -1,35 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 
 namespace Shamir
 {
     public class Share
     {
-        private string name;
-        private int value;
+        private readonly int x;     // shade number - in this case non-random number
+        private readonly int m;     // calculated shade value
 
-        public Share(string name, int value)
+        // create the shade, it is be immutable
+        public Share(int x, int m)
         {
-            this.name = name;
-            this.value = value;
+            this.x = x;
+            this.m = m;
         }
 
+        // retunr the shade in single string
         public string ToString()
         {
-            StringBuilder sb = new StringBuilder(name);
-            sb.Append(", ").Append(value.ToString());
+            StringBuilder sb = new StringBuilder(x.ToString());
+            sb.Append(", ").Append(m.ToString());
             return sb.ToString();
         }
 
-        public string GetName()
-        {
-            return name;
-        }
+        // getters
+        public int GetX() { return x; }
 
-        public int GetValue()
-        {
-            return value;
-        }
+        public int GetM() { return m; }
     }
 }
