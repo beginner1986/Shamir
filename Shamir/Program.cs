@@ -5,8 +5,11 @@ namespace Shamir
     class Program
     {
         static void Main(string[] args)
-        {
-            Console.WriteLine("Hello World!");
+        { 
+
+            Share share = new Share("1", 20);
+
+            Console.WriteLine(share.ToString());
         }
     }
 }
