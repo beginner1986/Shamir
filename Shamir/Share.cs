@@ -15,7 +15,7 @@ namespace Shamir
         }
 
         // retunr the shade in single string
-        public string ToString()
+        public override string ToString()
         {
             StringBuilder sb = new StringBuilder(x.ToString());
             sb.Append(", ").Append(m.ToString());
