@@ -20,44 +20,77 @@ namespace Shamir
             Random r = new Random();
             coefficients = new int[degree];
 
+            /*
             // ceofficients calculation
             for (int i = 0; i < degree; i++)
             {
                 coefficients[i] = r.Next(p);
             }
+            */
+
+            // DEBUG
+            coefficients[0] = 7;
+            coefficients[1] = 8;
         }
 
         public Share[] Encode(int M)
         {
             Share[] result = new Share[n];
 
-            // i - number of shares
-            for (int x = 1; x <= n; x++)
+            // create n shades
+            for (int i=0; i<n; i++)
             {
-                // W(x) value
                 int W = 0;
-
-                for(int i=1; i<m; i++)
+                
+                // create a single shade value
+                int x = i + 1;
+                
+                for(int j=0; j<coefficients.Length; j++)
                 {
-                    W += coefficients[i - 1] * (int) Math.Pow(x, i - 1);
+                    int n = coefficients.Length - j;
+                    W += coefficients[j] * (int)Math.Pow(x, n);
                 }
 
-                // M = a0 - our secret
+                // add a0 = M
                 W += M;
-
-                // the big prime
                 W %= p;
 
-                result[x - 1] = new Share(x, W);
+                // create the new shade and add it to result
+                result[i] = new Share(i, W);
             }
 
+            // return the array of shades
             return result;
         }
 
         public int Decode(Share[] shares)
         {
+            // secret = W(0)
+            int result = 0;
+
             // TODO
-            return 0;
+
+            return result % p;
+        }
+
+        private int Power(int x, int n, int p)
+        {
+            int result = 1;
+
+            x %= p;
+
+            while(n > 0)
+            {
+                if((n & 1) == 1)
+                {
+                    result = (result * x) % p;
+                }
+
+                n = n >> 1;
+                x = (x * x) % p;
+            }
+
+            return result;
         }
     }
 }
