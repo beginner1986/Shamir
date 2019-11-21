@@ -18,7 +18,7 @@ namespace Shamir
             secret = Convert.ToInt32(Console.ReadLine());
 
             // encode the single secret
-            Share[] shares = shamir.Encode(secret);
+            Share[] shares = shamir.Encrypt(secret);
 
             // list the shares
             Console.WriteLine("Udziały:");
@@ -28,9 +28,13 @@ namespace Shamir
             }
 
             // decrypted secret
+            Share[] test = { shares[1], shares[2], shares[4] };
             Console.WriteLine("Odtworzony sekret:");
-            int restored = shamir.Decode(shares);
-            Console.WriteLine(restored);
+            int restored = shamir.Decrypt(test);
+            Console.WriteLine("\n\n" + restored);
+
+            // DEBUG
+            Console.Write(shamir.ModularInverse(-5, 13));
 
             // hold the screen
             Console.ReadKey(true);

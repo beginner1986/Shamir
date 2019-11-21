@@ -33,19 +33,19 @@ namespace Shamir
             coefficients[1] = 8;
         }
 
-        public Share[] Encode(int M)
+        public Share[] Encrypt(int M)
         {
             Share[] result = new Share[n];
 
             // create n shades
-            for (int i=0; i<n; i++)
+            for (int i = 0; i < n; i++)
             {
                 int W = 0;
-                
+
                 // create a single shade value
                 int x = i + 1;
-                
-                for(int j=0; j<coefficients.Length; j++)
+
+                for (int j = 0; j < coefficients.Length; j++)
                 {
                     int n = coefficients.Length - j;
                     W += coefficients[j] * (int)Math.Pow(x, n);
@@ -56,41 +56,61 @@ namespace Shamir
                 W %= p;
 
                 // create the new shade and add it to result
-                result[i] = new Share(i, W);
+                result[i] = new Share(x, W);
             }
 
             // return the array of shades
             return result;
         }
 
-        public int Decode(Share[] shares)
+        public int Decrypt(Share[] shares)
         {
             // secret = W(0)
             int result = 0;
 
-            // TODO
+            for (int i = 0; i < m; i++)
+            {
+                int temp = 1;
+
+                for (int j = 0; j < m; j++)
+                {
+                    if (i != j)
+                    {
+
+                        temp *= (-shares[j].GetX()) / (shares[i].GetX() - shares[j].GetX());
+                        Console.Write("[" + (-shares[j].GetX()) + " / (" + shares[i].GetX() + " - " + shares[j].GetX() + ")]");
+                    }
+                }
+
+                Console.Write(" * " + shares[i].GetM());
+                temp *= shares[i].GetM();
+                temp %= p;
+                Console.Write(" mod " + p + " + ");
+
+                result += temp;
+            }
 
             return result % p;
         }
 
-        private int Power(int x, int n, int p)
+        public int ModularInverse(int a, int m)
         {
-            int result = 1;
-
-            x %= p;
-
-            while(n > 0)
+            if(a < 0)
             {
-                if((n & 1) == 1)
-                {
-                    result = (result * x) % p;
-                }
-
-                n = n >> 1;
-                x = (x * x) % p;
+                return a + m;
             }
 
-            return result;
+            a %= m;
+            
+            for (int x = 1; x < m; x++)
+            {
+                if ((a * x) % m == 1)
+                {
+                    return x;
+                }
+            }
+
+            return 1;
         }
     }
 }
