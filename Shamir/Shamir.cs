@@ -91,21 +91,25 @@ namespace Shamir
             return result % p;
         }
 
-        public int ModularInverse(int a, int n)
+        public int ModularInverse(int a, int m)
         {
-            int i = n, v = 0, d = 1;
-            while (a > 0)
+            if (a < 0)
             {
-                int t = i / a, x = a;
-                a = i % x;
-                i = x;
-                x = d;
-                d = v - t * x;
-                v = x;
+                return a + m;
             }
-            v %= n;
-            if (v < 0) v = (v + n) % n;
-            return v;
+
+            a %= m;
+
+            for (int x = 1; x < m; x++)
+            {
+                if ((a * x) % m == 1)
+                {
+                    return x;
+                }
+
+            }
+
+            return 0;
         }
     }
 }
