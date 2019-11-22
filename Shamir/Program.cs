@@ -11,7 +11,7 @@ namespace Shamir
             Console.WriteLine("Kryptologia: Laoratorium nr 2 - podział sekretów.");
 
             // create the encoder / decoder object
-            Shamir shamir = new Shamir(101, 10, 4);
+            Shamir shamir = new Shamir(199, 10, 4);
 
             // get the secret from the console
             int secret;
