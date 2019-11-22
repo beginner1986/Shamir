@@ -76,16 +76,14 @@ namespace Shamir
                 {
                     if (i != j)
                     {
-
-                        temp *= (-shares[j].GetX()) / (shares[i].GetX() - shares[j].GetX());
-                        Console.Write("[" + (-shares[j].GetX()) + " / (" + shares[i].GetX() + " - " + shares[j].GetX() + ")]");
+                        temp *= (ModularInverse(-shares[j].GetX(), p)) * (ModularInverse(shares[i].GetX() - shares[j].GetX(), p));
+                        Console.Write("[" + ModularInverse(-shares[j].GetX(), p) + " * " + (ModularInverse(shares[i].GetX() - shares[j].GetX(), p)) + "]");
                     }
                 }
 
+                temp %= 13;
+
                 Console.Write(" * " + shares[i].GetM());
-                temp *= shares[i].GetM();
-                temp %= p;
-                Console.Write(" mod " + p + " + ");
 
                 result += temp;
             }
@@ -93,24 +91,21 @@ namespace Shamir
             return result % p;
         }
 
-        public int ModularInverse(int a, int m)
+        public int ModularInverse(int a, int n)
         {
-            if(a < 0)
+            int i = n, v = 0, d = 1;
+            while (a > 0)
             {
-                return a + m;
+                int t = i / a, x = a;
+                a = i % x;
+                i = x;
+                x = d;
+                d = v - t * x;
+                v = x;
             }
-
-            a %= m;
-            
-            for (int x = 1; x < m; x++)
-            {
-                if ((a * x) % m == 1)
-                {
-                    return x;
-                }
-            }
-
-            return 1;
+            v %= n;
+            if (v < 0) v = (v + n) % n;
+            return v;
         }
     }
 }

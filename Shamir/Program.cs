@@ -33,9 +33,8 @@ namespace Shamir
             int restored = shamir.Decrypt(test);
             Console.WriteLine("\n\n" + restored);
 
-            // DEBUG
-            Console.Write(shamir.ModularInverse(-5, 13));
 
+            Console.WriteLine(shamir.ModularInverse(-3, 13));
             // hold the screen
             Console.ReadKey(true);
         }
