@@ -76,11 +76,12 @@ namespace Shamir
                 {
                     if (i != j)
                     {
-                        temp *= (ModularInverse(-shares[j].GetX(), p)) * (ModularInverse(shares[i].GetX() - shares[j].GetX(), p));
-                        Console.Write("[" + ModularInverse(-shares[j].GetX(), p) + " * " + (ModularInverse(shares[i].GetX() - shares[j].GetX(), p)) + "]");
+                        temp *= (ModularInverse(-shares[j].GetX(), p)) * (ModularInverse(ModNegative(shares[i].GetX() - shares[j].GetX(), p), p));
+                        Console.Write("[" + ModularInverse(-shares[j].GetX(), p) + " * " + (ModularInverse(ModNegative(shares[i].GetX() - shares[j].GetX(), p), p)) + "]");
                     }
                 }
 
+                temp *= shares[i].GetM();
                 temp %= 13;
 
                 Console.Write(" * " + shares[i].GetM());
@@ -89,6 +90,11 @@ namespace Shamir
             }
 
             return result % p;
+        }
+
+        private int ModNegative(int a, int m)
+        {
+            return (Math.Abs(a * m) + a) % m;
         }
 
         public int ModularInverse(int a, int m)
