@@ -20,17 +20,17 @@ namespace Shamir
             Random r = new Random();
             coefficients = new int[degree];
 
-            /*
             // ceofficients calculation
             for (int i = 0; i < degree; i++)
             {
-                coefficients[i] = r.Next(p);
+                coefficients[i] = r.Next(1, p);
             }
-            */
 
+            /*
             // DEBUG
             coefficients[0] = 7;
             coefficients[1] = 8;
+            */
         }
 
         public Share[] Encrypt(int M)
@@ -70,26 +70,42 @@ namespace Shamir
 
             for (int i = 0; i < m; i++)
             {
-                int temp = 1;
+                long temp = 1;
 
                 for (int j = 0; j < m; j++)
                 {
                     if (i != j)
                     {
-                        temp *= (ModularInverse(-shares[j].GetX(), p)) * (ModularInverse(ModNegative(shares[i].GetX() - shares[j].GetX(), p), p));
-                        Console.Write("[" + ModularInverse(-shares[j].GetX(), p) + " * " + (ModularInverse(ModNegative(shares[i].GetX() - shares[j].GetX(), p), p)) + "]");
+                        //temp *= (ModularInverse(-shares[j].GetX(), p)) * (ModularInverse(ModNegative(shares[i].GetX() - shares[j].GetX(), p), p));
+                        //Console.Write("[" + ModularInverse(-shares[j].GetX(), p) + " * " + (ModularInverse(ModNegative(shares[i].GetX() - shares[j].GetX(), p), p)) + "]");
+
+                        long part1 = ModNegative(-shares[j].GetX(), p);
+                        long part2 = ModSecond(shares[i].GetX() - shares[j].GetX(), p);
+                        Console.WriteLine(part1 + " * " + part2 + " mod " + p);
+                        temp *= part1 * part2 % p;
                     }
                 }
 
                 temp *= shares[i].GetM();
                 temp %= 13;
 
-                Console.Write(" * " + shares[i].GetM());
+               // Console.Write(" * " + shares[i].GetM());
 
-                result += temp;
+                result += (int)temp;
             }
 
             return result % p;
+        }
+
+        private int ModSecond(int a, int m)
+        {
+            if(a < 0)
+            {
+                int temp = ModNegative(a, m);
+                return ModularInverse(temp, m);
+            }
+
+            return ModularInverse(a, m);
         }
 
         private int ModNegative(int a, int m)
@@ -97,25 +113,21 @@ namespace Shamir
             return (Math.Abs(a * m) + a) % m;
         }
 
-        public int ModularInverse(int a, int m)
+        private int ModularInverse(int a, int m)
         {
-            if (a < 0)
+            int i = m, v = 0, d = 1;
+            while (a > 0)
             {
-                return a + m;
+                int t = i / a, x = a;
+                a = i % x;
+                i = x;
+                x = d;
+                d = v - t * x;
+                v = x;
             }
-
-            a %= m;
-
-            for (int x = 1; x < m; x++)
-            {
-                if ((a * x) % m == 1)
-                {
-                    return x;
-                }
-
-            }
-
-            return 0;
+            v %= m;
+            if (v < 0) v = (v + m) % m;
+            return v;
         }
     }
 }

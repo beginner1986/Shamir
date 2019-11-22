@@ -7,17 +7,18 @@ namespace Shamir
         static void Main(string[] args)
         {
             // introduction
-            Console.WriteLine("Kryptologia: Laoratorium nr 2- podział sekretów.");
+            Console.WriteLine("Adam Emieljaniuk, N2C");
+            Console.WriteLine("Kryptologia: Laoratorium nr 2 - podział sekretów.");
 
             // create the encoder / decoder object
-            Shamir shamir = new Shamir(13, 5, 3);
+            Shamir shamir = new Shamir(101, 10, 4);
 
             // get the secret from the console
             int secret;
             Console.WriteLine("Sekret:");
             secret = Convert.ToInt32(Console.ReadLine());
 
-            // encode the single secret
+            // encrypt the single secret
             Share[] shares = shamir.Encrypt(secret);
 
             // list the shares
@@ -28,13 +29,12 @@ namespace Shamir
             }
 
             // decrypted secret
-            Share[] test = { shares[1], shares[2], shares[4] };
+            // Share[] test = { shares[1], shares[2], shares[4] };
+            Console.WriteLine();
             Console.WriteLine("Odtworzony sekret:");
-            int restored = shamir.Decrypt(test);
+            int restored = shamir.Decrypt(shares);
             Console.WriteLine("\n\n" + restored);
 
-
-            Console.WriteLine(shamir.ModularInverse(-3, 13));
             // hold the screen
             Console.ReadKey(true);
         }
