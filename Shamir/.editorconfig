@@ -2,3 +2,6 @@
 
 # CS0114: Member hides inherited member; missing override keyword
 dotnet_diagnostic.CS0114.severity = suggestion
+
+# IDE0044: Add readonly modifier
+dotnet_style_readonly_field = true:suggestion

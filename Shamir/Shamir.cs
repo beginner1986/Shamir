@@ -7,7 +7,7 @@ namespace Shamir
         private readonly int p;     // prime number p > m && p > n
         private readonly int m;     // treshold (polynomial degree + 1)
         private readonly int n;     // number of shades
-        private int[] coefficients;    // a1, a2, ...
+        private readonly int[] coefficients;    // a1, a2, ...
 
         public Shamir(int p, int n, int m)
         {
@@ -25,12 +25,6 @@ namespace Shamir
             {
                 coefficients[i] = r.Next(1, p);
             }
-
-            /*
-            // DEBUG
-            coefficients[0] = 7;
-            coefficients[1] = 8;
-            */
         }
 
         public Share[] Encrypt(int M)
@@ -78,7 +72,6 @@ namespace Shamir
                     {
                         long part1 = ModNegative(-shares[j].GetX(), p);
                         long part2 = ModSecond(shares[i].GetX() - shares[j].GetX(), p);
-                        // Console.WriteLine(part1 + " * " + part2 + " mod " + p);
                         temp *= part1 * part2 % p;
                     }
                 }
@@ -107,24 +100,24 @@ namespace Shamir
 
         private int ModNegative(int a, int m)
         {
-            return (Math.Abs(a * m) + a) % m;
+            int r = a % m;
+            return r < 0 ? r + m : r;
         }
 
+        // source: https://rosettacode.org/wiki/Modular_inverse#C.23
         private int ModularInverse(int a, int m)
         {
-            int i = m, v = 0, d = 1;
-            while (a > 0)
+            if (m == 1) return 0;
+            int m0 = m;
+            (int x, int y) = (1, 0);
+
+            while (a > 1)
             {
-                int t = i / a, x = a;
-                a = i % x;
-                i = x;
-                x = d;
-                d = v - t * x;
-                v = x;
+                int q = a / m;
+                (a, m) = (m, a % m);
+                (x, y) = (y, x - q * y);
             }
-            v %= m;
-            if (v < 0) v = (v + m) % m;
-            return v;
+            return x < 0 ? x + m0 : x;
         }
     }
 }
