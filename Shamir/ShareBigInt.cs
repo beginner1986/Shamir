@@ -1,15 +1,15 @@
 ﻿using System.Text;
-using System.Numerics;
+using Org.BouncyCastle.Math;
 
 namespace Shamir
 {
-    class ShareBigInt
+    public class ShareBigInt
     {
         private readonly BigInteger x;     // shade number - in this case non-random number
         private readonly BigInteger m;     // calculated shade value
 
         // create the shade, it is be immutable
-        ShareBigInt(BigInteger x, BigInteger m)
+        public ShareBigInt(BigInteger x, BigInteger m)
         {
             this.x = x;
             this.m = m;

@@ -1,4 +1,5 @@
 ﻿using System;
+using Org.BouncyCastle.Math;
 
 namespace Shamir
 {
@@ -10,6 +11,7 @@ namespace Shamir
             Console.WriteLine("Adam Emieljaniuk, N2C");
             Console.WriteLine("Kryptologia: Laoratorium nr 2 - podział sekretów.\n");
 
+            // ------------------ INT PART ------------------
             // create the encoder / decoder object
             Shamir shamir = new Shamir(101, 10, 4);
 
@@ -33,6 +35,28 @@ namespace Shamir
             Console.WriteLine("Odtworzony sekret:");
             int restored = shamir.Decrypt(shares);
             Console.WriteLine(restored);
+            Console.WriteLine();
+            // ------------------ /INT PART ------------------
+
+            // ---------------- BIG INT PART ------------------
+            BigInteger maxSecretValue = new BigInteger("99999999999999999999999999999999999999999999999999");
+            BigInteger secretBigInt = Util.RandomBigInteger(maxSecretValue);
+            BigInteger bigP = BigInteger.ProbablePrime(secretBigInt.BitLength + 1, new Random()).Abs();
+
+            ShamirBigInt shamirBigInt = new ShamirBigInt(bigP, 10, 4);
+            Console.WriteLine("Sekret: ");
+            Console.WriteLine(secretBigInt.ToString());
+
+            // encrypt the BigInteger secret
+            ShareBigInt[] sharesBigInt = shamirBigInt.Encrypt(secretBigInt);
+
+            // list the shares
+            Console.WriteLine("\nUdziały:");
+            foreach (ShareBigInt share in sharesBigInt)
+            {
+                Console.WriteLine(share.ToString());
+            }
+            // ---------------- /BIG INT PART ------------------
 
             // hold the screen
             Console.ReadKey(true);
