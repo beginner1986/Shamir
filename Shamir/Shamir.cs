@@ -78,8 +78,6 @@ namespace Shamir
 
                 temp *= shares[i].GetM();
 
-               // Console.Write(" * " + shares[i].GetM());
-
                 result += (int)temp;
                 result %= p;
             }

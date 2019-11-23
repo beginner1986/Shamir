@@ -5,6 +5,9 @@ namespace Shamir
 {
     public static class Util
     {
+        // get a random BigInteger number
+        // function based on: https://stackoverflow.com/questions/17357760/how-can-i-generate-a-random-biginteger-within-a-certain-range
+        // original function was written for System.Numeric.BigInteger
         public static BigInteger RandomBigInteger(BigInteger N)
         {
             byte[] bytes = N.ToByteArray();

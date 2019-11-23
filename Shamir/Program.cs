@@ -39,10 +39,15 @@ namespace Shamir
             // ------------------ /INT PART ------------------
 
             // ---------------- BIG INT PART ------------------
+            
+            // secret value limitation
             BigInteger maxSecretValue = new BigInteger("99999999999999999999999999999999999999999999999999");
+            // get new random secret
             BigInteger secretBigInt = Util.RandomBigInteger(maxSecretValue);
+            // generate BigInteger prime number
             BigInteger bigP = BigInteger.ProbablePrime(secretBigInt.BitLength + 1, new Random()).Abs();
 
+            // BigInteger encryptor / decryptor object
             ShamirBigInt shamirBigInt = new ShamirBigInt(bigP, 10, 4);
             Console.WriteLine("Sekret: ");
             Console.WriteLine(secretBigInt.ToString());
@@ -56,6 +61,12 @@ namespace Shamir
             {
                 Console.WriteLine(share.ToString());
             }
+
+            // decrypted secret
+            Console.WriteLine();
+            Console.WriteLine("Odtworzony sekret:");
+            BigInteger restoredBigInt = shamirBigInt.Decrypt(sharesBigInt);
+            Console.WriteLine(restoredBigInt);
             // ---------------- /BIG INT PART ------------------
 
             // hold the screen

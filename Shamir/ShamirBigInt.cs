@@ -24,7 +24,6 @@ namespace Shamir
             {
                 coefficients[i] = Util.RandomBigInteger(p);
             }
-
         }
 
         public ShareBigInt[] Encrypt(BigInteger M)
@@ -35,26 +34,20 @@ namespace Shamir
             for (int i = 0; i < n; i++)
             {
                 //BigInteger W = 0;
-                BigInteger W = new BigInteger("0");
+                BigInteger W = BigInteger.Zero;
 
                 // create a single shade value
-                //BigInteger x = i + 1;
-                BigInteger x = new BigInteger("1").Add(new BigInteger(i.ToString()));
+                BigInteger x = BigInteger.One.Add(new BigInteger(i.ToString()));
                 
 
                 for (int j = 0; j < coefficients.Length; j++)
                 {
                     int n = coefficients.Length - j;
-                    //W += coefficients[j] * BigInteger.Pow(x, n);
-                    BigInteger temp = x.ModPow(x, new BigInteger(n.ToString()));
-                    W = W.Add(coefficients[j].Multiply(temp));
+                    W = W.Add(coefficients[j].Multiply(x.Pow(n)));
                 }
 
                 // add a0 = M
-                //W += M;
-                W = W.Add(M);
-                //W %= p;
-                W = W.Mod(p);
+                W = W.Add(M).Mod(p);
 
                 // create the new shade and add it to result
                 result[i] = new ShareBigInt(x, W);
@@ -66,9 +59,47 @@ namespace Shamir
 
         public BigInteger Decrypt(ShareBigInt[] shares)
         {
-            // TODO
+            // secret = W(0)
+            BigInteger result = BigInteger.Zero;
 
-            return new BigInteger("0");
+            for (int i = 0; i < m; i++)
+            {
+                BigInteger temp = new BigInteger("1");
+
+                for (int j = 0; j < m; j++)
+                {
+                    if (i != j)
+                    {
+                        BigInteger part1 = ModNegative(shares[j].GetX().Multiply(new BigInteger("-1")), p);
+                        BigInteger part2 = ModSecond(shares[i].GetX().Subtract(shares[j].GetX()), p);
+                        temp = temp.Multiply(part1.Multiply(part2).Mod(p));
+                    }
+                }
+
+                temp = temp.Multiply(shares[i].GetM());
+
+                result = result.Add(temp);
+                result = result.Mod(p);
+            }
+
+            return result.Mod(p);
+        }
+
+        private BigInteger ModSecond(BigInteger a, BigInteger m)
+        {
+            if (a.CompareTo(BigInteger.Zero) < 0)
+            {
+                BigInteger temp = ModNegative(a, m);
+                return temp.ModInverse(m);
+            }
+
+            return a.ModInverse(m);
+        }
+
+        private BigInteger ModNegative(BigInteger a, BigInteger m)
+        {
+            BigInteger r = a.Mod(m);
+            return r.CompareTo(BigInteger.Zero) < 0 ? r.Add(m) : r;
         }
     }
 }
